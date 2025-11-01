@@ -124,18 +124,28 @@ const  {totalmessages,setTotalmessages}=useContext(noteContext);
   const [messages, setMessages] = useState(0);
 
     const fetchMessages=async ()=>{
-    const role=localStorage.getItem('role');
-    console.log("Kyu nhi chalega ");
-    const url=`${API_BASE_URL}/${role}/getMessages`;
-    const response=await fetch(url,{
-        method:"GET",
-        credentials:"include"
-    });
-    const res=await response.json();
-    console.log(res.list);
-    console.log("Counting is ",res.counting);
-    setTotalmessages(res.list);
-    setMessages(res.counting);
+    try {
+      const role=localStorage.getItem('role');
+      console.log("Kyu nhi chalega ");
+      const url=`${API_BASE_URL}/${role}/getMessages`;
+      const response=await fetch(url,{
+          method:"GET",
+          credentials:"include"
+      });
+      
+      if (!response.ok) {
+        console.log("Not authenticated, skipping messages fetch");
+        return;
+      }
+      
+      const res=await response.json();
+      console.log(res.list);
+      console.log("Counting is ",res.counting);
+      setTotalmessages(res.list);
+      setMessages(res.counting);
+    } catch (error) {
+      console.log("Error fetching messages:", error);
+    }
 }
 
 

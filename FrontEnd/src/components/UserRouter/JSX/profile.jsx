@@ -21,17 +21,27 @@ const Profile = () => {
         // }
         // getData();
         const AllHomes=async ()=>{
-          const url=`${API_BASE_URL}/user/ToPopuate`;
-          const response=await fetch(url,{
-            method:"GET",
-            credentials:"include"
-          })
-          const res=await response.json();
-          setDetails(()=>{
-            const updated={favourites:res.favourites,BookedFinal:res.BookedFinal,user:res.user};
-            console.log("User is ",updated.user);
-            return updated;
-          })
+          try {
+            const url=`${API_BASE_URL}/user/ToPopuate`;
+            const response=await fetch(url,{
+              method:"GET",
+              credentials:"include"
+            })
+            
+            if (!response.ok) {
+              console.log("Not authenticated, skipping profile load");
+              return;
+            }
+            
+            const res=await response.json();
+            setDetails(()=>{
+              const updated={favourites:res.favourites,BookedFinal:res.BookedFinal,user:res.user};
+              console.log("User is ",updated.user);
+              return updated;
+            })
+          } catch (error) {
+            console.log("Error loading profile:", error);
+          }
         }
         AllHomes();
     },[]);
