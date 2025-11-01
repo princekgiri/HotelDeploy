@@ -10,6 +10,15 @@ const middleWare=(req,res,next)=>{
   //console.log("So here is what should be Renter req url ",req.url);
 return Login(req.body.email,req.body.password,req.body.role)(req,res,next);
 }
+
+// Authentication middleware - check if user is logged in
+const requireAuth=(req,res,next)=>{
+  if(!req.session || !req.session.user || !req.session.user.id){
+    return res.status(401).json({error: "Unauthorized", message: "Please login to access this resource"});
+  }
+  next();
+}
+
 const LogoutCall=(req,res,next)=>{
   ////console.log("Till Logout middleware ran");
 return Logout(req.session.user.id)(req,res);
