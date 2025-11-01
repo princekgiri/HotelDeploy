@@ -51,17 +51,29 @@ return async(req,res,next)=>{
 
 // To Get All Homes At Starting 
 exports.AllHomes=async (req,res,next)=>{
-const Hotels=await Hotelnames.find();
-const Updated=await User.findById(req.session.user.id);
-const fav=Updated.BookedFinal;
-console.log("The Homes which came in this are ",fav);
-const getUpdated=await Hotelnames.updateMany(
-  {_id:{$in:fav},Booked:{$exists:false}},
-  {$set:{Booked:"yes"}}
-)
-const getu=await Hotelnames.find({_id:{$in:fav}});
-console.log("The updated ones are ",getUpdated);
-res.send({Hotels:Hotels,lengthOfHotels:Hotels.length});
+try {
+  const Hotels=await Hotelnames.find();
+  
+  // Only update booked status if user is logged in
+  if(req.session && req.session.user && req.session.user.id) {
+    const Updated=await User.findById(req.session.user.id);
+    if(Updated && Updated.BookedFinal) {
+      const fav=Updated.BookedFinal;
+      console.log("The Homes which came in this are ",fav);
+      const getUpdated=await Hotelnames.updateMany(
+        {_id:{$in:fav},Booked:{$exists:false}},
+        {$set:{Booked:"yes"}}
+      )
+      const getu=await Hotelnames.find({_id:{$in:fav}});
+      console.log("The updated ones are ",getUpdated);
+    }
+  }
+  
+  res.send({Hotels:Hotels,lengthOfHotels:Hotels.length});
+} catch(error) {
+  console.error("Error in AllHomes:", error);
+  res.status(500).json({error: "Failed to fetch homes", message: error.message});
+}
 }
 
 
