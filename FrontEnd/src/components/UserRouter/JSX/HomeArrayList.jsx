@@ -2,6 +2,7 @@ import {useState,useEffect,useRef,useContext} from 'react'
 import {useNavigate,Link} from 'react-router-dom'
 import '../Css/HomeArrayListCss.css'
 import {noteContext} from './NoteState/NoteState'
+import API_BASE_URL from '../../../config'
 
 
 //Fetch Function
@@ -20,7 +21,7 @@ function HomeArrayList({pages,setPages}){
       if(localStorage.getItem('priceTotal')) localStorage.removeItem('priceTotal');
     // console.log("HomeArrayList Runs Here Runs Here");
     const fetchData= async ()=>{
-    const url="http://localhost:3000/user/AllHomes";
+    const url=`${API_BASE_URL}/user/AllHomes`;
     const response=await fetch(url,{
       method:"GET",
       headers:{
@@ -39,7 +40,7 @@ function HomeArrayList({pages,setPages}){
     // console.log("It is even running now does not matter " );
   fetchData();}
   const fetchuser=async ()=>{
-    const url="http://localhost:3000/user/Passname";
+    const url=`${API_BASE_URL}/user/Passname`;
   const response=await fetch(url,{
     method:"GET",
     credentials:"include"

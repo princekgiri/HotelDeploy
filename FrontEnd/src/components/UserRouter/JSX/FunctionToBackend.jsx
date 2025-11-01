@@ -1,5 +1,6 @@
 import {useContext,useState} from 'react'
 import {noteContext} from './NoteState/NoteState'
+import API_BASE_URL from '../../../config'
 
 export let lengtho;
 
@@ -8,7 +9,7 @@ const useBackend = () => {
   
   const send = async (data) => {
     if(loginstate){
-      const url = "http://localhost:3000/user/filters";
+      const url = `${API_BASE_URL}/user/filters`;
       const response = await fetch(url, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
@@ -21,7 +22,7 @@ const useBackend = () => {
   };
 
   const SignUpUsers = async (data,role) => {
-    const url = `http://localhost:3000/${role}/SignUp`;
+    const url = `${API_BASE_URL}/${role}/SignUp`;
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -39,7 +40,7 @@ const useBackend = () => {
 
   const LoginCheck = async (data,role) => {
     console.log("The Sent data is here ", data);
-    const url = `http://localhost:3000/${role}/Login`;
+    const url = `${API_BASE_URL}/${role}/Login`;
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -61,7 +62,7 @@ const useBackend = () => {
   };
 
   const RemoveHome=async (id)=>{
-    const url=`http://localhost:3000/user/removeFav/${id}`;
+    const url=`${API_BASE_URL}/user/removeFav/${id}`;
     console.log(id);
     const response=await fetch(url,{
       method:"GET",
@@ -75,7 +76,7 @@ const useBackend = () => {
     return res;
   }
   const profileInfo=async ()=>{
-    const url="http://localhost:3000/user/profile";
+    const url=`${API_BASE_URL}/user/profile`;
     console.log("Its is coming here");
     const response=await fetch(url,{
       method:"GET",
@@ -90,7 +91,7 @@ const useBackend = () => {
   }
   const TOSendToMEssage=async (OwnerDetails,UserDetails,message,role)=>{
     // console.log("Now ab bhene wala chalega ");
-            const url=`http://localhost:3000/${role}/messageuser`;
+            const url=`${API_BASE_URL}/${role}/messageuser`;
             const response=await fetch(url,{
                 method:"POST",
                 headers:{
@@ -105,7 +106,7 @@ const useBackend = () => {
     }
     const PersonalFetchAllMEssage=async (Ownername,Owneremail,useremail,role)=>{
       console.log("Abhi fetch wala chal rha ahi without something ");
-      const url=`http://localhost:3000/${role}/PersonalFetchAllMEssage`;
+      const url=`${API_BASE_URL}/${role}/PersonalFetchAllMEssage`;
       const response=await fetch(url,{
         method:"POST",
         headers:{
@@ -125,7 +126,7 @@ const  {totalmessages,setTotalmessages}=useContext(noteContext);
     const fetchMessages=async ()=>{
     const role=localStorage.getItem('role');
     console.log("Kyu nhi chalega ");
-    const url=`http://localhost:3000/${role}/getMessages`;
+    const url=`${API_BASE_URL}/${role}/getMessages`;
     const response=await fetch(url,{
         method:"GET",
         credentials:"include"
