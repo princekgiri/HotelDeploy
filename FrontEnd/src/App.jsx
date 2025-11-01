@@ -2,6 +2,7 @@ import './App.css'
 // Have to import Login page after
 // import Login from './components/Jsx-Files/Login'
 import Home from './components/UserRouter/JSX/Home'
+import HomeHost from './components/HostRouter/JSX/HomeHost'
 import About from './components/UserRouter/JSX/About'
 import {
   BrowserRouter,
@@ -32,6 +33,7 @@ function App() {
         <Route path={"/FavouriteHome"} element={<PrivateFavourite/>}/>
         <Route path={"/Favourites"} element={<FavouriteHomes/>}/>
         <Route path={"/BookedFav"} element={<BookedHomes/>}/>
+        <Route path={"/Host"} element={<HomeHost/>}/>
       </Routes>
     </div>
     </BrowserRouter>
