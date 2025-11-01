@@ -3,21 +3,24 @@ import '../Css/Home.css';
 import {noteContext} from './NoteState/NoteState'
 import {HomeArrayList} from './HomeArrayList'
 import useSend from './FunctionToBackend'
+import Alert from './Alert'
 import {useNavigate} from 'react-router-dom'
 function Home() {
   const Navigate=useNavigate();
-  const {send}=useSend();
-  const {ArrayList,setArrayList,Endpage,setEndPage,setStartPage,startpage,loginstate}=useContext(noteContext);
+  const {send,profileInfo,fetchMessages,messages, setMessages}=useSend();
+  const {ArrayList,setArrayList,Endpage,setEndPage,setStartPage,startpage,loginstate,alert,setAlert}=useContext(noteContext);
   const [load,setLoad]=useState(localStorage.getItem('loginstate'));
+  const [pages,setPages]=useState(0);
   useEffect(()=>{
     //Login Should be Done or not
     loginstate.current=localStorage.getItem('loginstate');
-    console.log("It ran for ",localStorage.getItem('loginstate'));
-    console.log("It ran for ",loginstate);
+    // console.log("It ran for ",localStorage.getItem('loginstate'));
+    // console.log("It ran for ",loginstate);
     if(loginstate){
       console.log("It's ok ",loginstate);
     }
     else{
+      console.log("No it is not ok ");
       Navigate("/");
     }
   },[loginstate]);
@@ -30,6 +33,17 @@ function Home() {
     })
     const res=response.json();
     localStorage.setItem('loginstate',false);
+    localStorage.removeItem('email');
+    localStorage.removeItem('email');
+    localStorage.removeItem('OwnerEmailToFetch');
+    localStorage.removeItem('Owneremail');
+    localStorage.removeItem('Ownername');
+    localStorage.removeItem('OwnernameToShow');
+    localStorage.removeItem('Username');
+    localStorage.removeItem('home');
+    localStorage.removeItem('UserEmail');
+    localStorage.removeItem('useremailToFetch');
+    localStorage.removeItem('sentData');
     Navigate("/");
   }
 
@@ -39,35 +53,51 @@ function Home() {
     comfort: [],
     Price: 0,
     Property: "",
-    cancellation:""
+    cancellation:"",
+    environment:[],
+    search:'',
+    FirstDate:'',
+    SecondDate:''
   })
-  
-
+  const [checked,setChecked]=useState(false);
+  const [button,setButton]=useState([])
+  const totalPages=[]
+  useEffect(()=>{
+    for (let i=0;i<pages;i++){
+  totalPages.push(<button key={`${i}`} className="Pagi-buttons ToChange" checked name="firstButton" id={`buttonToChnage${i}`} value={i}  onClick={ChangePage} >{i+1}</button>)
+}
+  console.log("the nummber of buttons i got is here ",totalPages);
+setButton(()=>{
+  const updated=totalPages;
+  console.log("the nummber of buttons in setButton is here ",updated);
+  return updated;
+})
+},[pages])
   const Cancellation=(e)=>{ 
     e.preventDefault();
     const {value,name}=e.currentTarget;
-    if(!Filters[name].includes(value)){
-    setFilter((prev)=>{
-      const updated={...prev,[name]:value};
-      ////console.log(updated);
-      return updated;}
-    )}
-    else{
-      Filters[name]='';
-    }
-    ////console.log("Filters are here ",Filters);
+    // Always use setFilter and never mutate Filters directly
+    setFilter(prev => {
+      if (prev[name] === value) {
+        return { ...prev, [name]: '' };
+      }
+      return { ...prev, [name]: value };
+    });
   }
   useEffect(() => {
     ////console.log("Use Effect For Button Runs Here");
     const button = document.getElementById("span-Filter");
     const form = document.querySelector(".hidden");
     button.addEventListener("click", () => {
-    form.classList.remove("hidden");
+      // show modal and reset its scroll so it opens centered and at top
+      form.classList.remove("hidden");
+      try{ form.scrollTop = 0; const content = form.querySelector('.content-area'); if(content) content.scrollTop = 0; }catch(e){}
     });
     const cross = document.getElementById("cross");
     cross.addEventListener("click", () => {
       form.classList.add("hidden");
     })
+    fetchMessages();
   }, [])
   const count=useRef(0);
 
@@ -75,22 +105,41 @@ function Home() {
   
   useEffect(() => {
     const toRun=async ()=>{
-    ////console.log("Use Effect FOr sentData Runs Here Runs Here");
-    const sentData = {
-    }
+    console.log("Filters changed naale chal pena ehne");
+    let sentData={};
     //////console.log("Filter is THis ", Filters);
     if (Filters.comfort.length > 0) sentData.comfort = Filters.comfort;
+    if (Filters.environment.length > 0) sentData.environment = Filters.environment;
     if (Filters.Property) sentData.Property = Filters.Property;
     if (Filters.Price > 0) sentData.Price = Filters.Price;
     if (Filters.cancellation) {
-      ////console.log("Cancellation is here");
       sentData.cancellation = Filters.cancellation;}
-    ////console.log("SentData is Here ", sentData);
-    const dataGot=await send(sentData);
-    ////console.log("Data us here what you sent from back ",dataGot);
-    ////console.log("Now it is at ",count);
-    if(count.current>=1){
-    ////console.log("Now it increased to ",count);
+    if(Filters.search) sentData.searchFirst=Filters.search?sentData.searchFirst=Filters.search.split(" ")[0]:''
+    if(Filters.search) sentData.searchSecond=Filters.search?sentData.searchSecond=Filters.search.split(" ")[1]:''
+      if(sentData.Price||sentData.Property||sentData.environment||sentData.comfort||sentData.cancellation || sentData.searchFirst || sentData.searchSecond){
+        console.log("Heloo it is making it empty");
+    localStorage.setItem('sentData',JSON.stringify(sentData));}
+    const ParsedData=localStorage.getItem('sentData');
+    const setData=JSON.parse(ParsedData);
+    console.log("setData is being set like this",setData);
+    let dataGot;
+    let ToRUn=true;
+    if(setData){
+      console.log("Inside running and want to see setData see then ",setData);
+    dataGot=await send(setData);  
+    console.log("what is got in hotels ",dataGot.Hotels);
+    setArrayList(dataGot.Hotels);
+    ToRUn=false
+    }
+    else{
+      dataGot=await send(sentData);
+      console.log("what is got in hotels but it is outside ",dataGot.Hotels)
+    }
+    console.log("setData is here ",setData);
+    if(count.current>=1 && ToRUn){
+      ToRUn=true
+      console.log("It is running everytime does not matter to it ");
+      setPages(Math.ceil(dataGot.lengthOfHotels/12))
     setArrayList(dataGot.Hotels);
   }
     count.current++;
@@ -98,7 +147,9 @@ function Home() {
   }
 toRun();
 }, [Filters])
-
+useEffect(()=>{
+console.log("Hello");
+},[checked])
 
 
   const Change = (e) => {
@@ -116,23 +167,20 @@ toRun();
   const previousVa=useRef(1);
  const ChangePage=(e)=>{
   e.preventDefault();
-  ////console.log("Endpage is ",Endpage," startpage is ",startpage);
   const {value}=e.currentTarget;
-  ////console.log("Value is ",value);
-  const Toincrease=value-previousVa.current;
-  ////console.log("previousVa is ",previousVa," Toincrease is ",Toincrease);
-  const Toadd=Toincrease*12;
-  const EndAdd=(Toincrease)*12;
-  ////console.log("Toadd is ",Toadd," EndAdd is ",EndAdd);
-  setStartPage((prev)=>{
-    const num=Number(value);
-    const updated=Toadd+prev;
-    ////console.log("Here is the Start page",updated);
+  const btn=document.getElementById(`buttonToChnage${value}`);
+  btn.setAttribute('checked',true);
+  console.log("the value to change page is ",value);
+  const Toincrease=value*12;
+  const Toadd=Toincrease+1*12;
+  setStartPage(()=>{
+    const updated=Toincrease;
+    console.log("The to Update in start is ",updated);
     return updated;
   })
-  setEndPage((prev)=>{
-    const updated=prev+EndAdd;
-    ////console.log("End Page is setting here",updated);
+  setEndPage(()=>{
+    const updated=Toadd;
+    console.log("The to Update in end is ",updated);
     return updated;
   });
   previousVa.current=value;
@@ -142,367 +190,98 @@ toRun();
   //Function to add in arrays of something
   const add = (e) => {
     e.preventDefault();
-    ////console.log("Add Function Runs Here");
     const { name, value } = e.currentTarget;
-    ////console.log("name ",name ,"target is ",value);
-    if (!name) return;
+    console.log("What i got from values is ",value);
+    if (!name) {console.log("i am returning from here ");return};
     setFilter((prev) => {
-      if (!prev[name]) { return { [name]: [] }; }
-      if (prev[name].includes(value)) {
-        const updated = { ...prev, [name]: prev[name].filter(item => item !== value) };
-        //////console.log(updated);
-        return updated;
+      // Ensure we always work with an array for this key and return the full state object.
+      const current = Array.isArray(prev[name]) ? prev[name] : [];
+      if (current.includes(value)) {
+        return { ...prev, [name]: current.filter(item => item !== value) };
       }
-      const updated = { ...prev, [name]: [...prev[name], value] };
-      ////console.log(updated);
-      return updated;
+      return { ...prev, [name]: [...current, value] };
     })
   }
-  const [states, setStates] = useState([
-  "mumbai,maharashtra",
+  const [states, setStates] = useState(["mumbai,maharashtra",
   "pune,maharashtra",
-  "nashik,maharashtra",
   "nagpur,maharashtra",
-  "aurangabad,maharashtra",
-  "solapur,maharashtra",
-  "thane,maharashtra",
-  "kolhapur,maharashtra",
-  "amravati,maharashtra",
-  "sangli,maharashtra",
-  "jalgaon,maharashtra",
-  "akola,maharashtra",
-  "latur,maharashtra",
-  "dhule,maharashtra",
-  "satara,maharashtra",
-  "beed,maharashtra",
-  "ratnagiri,maharashtra",
-  "parbhani,maharashtra",
-  "nanded,maharashtra",
-  "osmanabad,maharashtra",
-  "chandrapur,maharashtra",
-  "wardha,maharashtra",
-  "gondia,maharashtra",
-  "bhandara,maharashtra",
-  "yavatmal,maharashtra",
-  "washim,maharashtra",
-  "hingoli,maharashtra",
-  "gadchiroli,maharashtra",
-  "raigad,maharashtra",
-  "sindhudurg,maharashtra",
-  "palghar,maharashtra",
-  "ahmednagar,maharashtra",
-  "mira-bhayandar,maharashtra",
-  "vasai-virar,maharashtra",
-  "panvel,maharashtra",
-  "kalyan,maharashtra",
-  "ulhasnagar,maharashtra",
-  "dombivli,maharashtra",
-  "navi mumbai,maharashtra",
-  "badlapur,maharashtra",
-  "ambarnath,maharashtra",
-  "bhiwandi,maharashtra",
-  "karjat,maharashtra",
-  "alibag,maharashtra",
-  "murbad,maharashtra",
-  "roha,maharashtra",
-  "khopoli,maharashtra",
-  "pen,maharashtra",
-  "uran,maharashtra",
-  "shahapur,maharashtra",
-  "rohini,delhi",
-  "saket,delhi",
-  "janakpuri,delhi",
-  "preet vihar,delhi",
-  "connaught place,delhi",
-  "chandni chowk,delhi",
+  "nashik,maharashtra",
+  "new delhi,delhi",
   "dwarka,delhi",
-  "pitampura,delhi",
-  "karol bagh,delhi",
-  "delhi cantt,delhi",
-  "vasant kunj,delhi",
-  "hauz khas,delhi",
-  "lajpat nagar,delhi",
-  "greater kailash,delhi",
-  "rajouri garden,delhi",
-  "patel nagar,delhi",
-  "kalkaji,delhi",
-  "malviya nagar,delhi",
-  "punjabi bagh,delhi",
-  "ashok vihar,delhi",
-  "paschim vihar,delhi",
-  "mehrauli,delhi",
-  "shalimar bagh,delhi",
-  "rohini sector 3,delhi",
-  "model town,delhi",
-  "civil lines,delhi",
-  "gtb nagar,delhi",
-  "azadpur,delhi",
-  "new friends colony,delhi",
-  "jangpura,delhi",
-  "sangam vihar,delhi",
-  "uttam nagar,delhi",
-  "okhla,delhi",
-  "narela,delhi",
-  "najafgarh,delhi",
-  "bhajanpura,delhi",
-  "seelampur,delhi",
-  "krishna nagar,delhi",
-  "patparganj,delhi",
-  "inderpuri,delhi",
-  "mayur vihar,delhi",
-  "sarita vihar,delhi",
-  "anand vihar,delhi",
-  "yamuna vihar,delhi",
-  "sadar bazaar,delhi",
+  "rohini,delhi",
   "bangalore,karnataka",
   "mysore,karnataka",
   "mangalore,karnataka",
-  "hubli,karnataka",
-  "belgaum,karnataka",
-  "gulbarga,karnataka",
-  "davanagere,karnataka",
-  "shimoga,karnataka",
-  "tumkur,karnataka",
-  "udupi,karnataka",
-  "hassan,karnataka",
-  "bidar,karnataka",
-  "chitradurga,karnataka",
-  "kolar,karnataka",
-  "chikmagalur,karnataka",
-  "mandya,karnataka",
-  "chickballapur,karnataka",
-  "bagalkot,karnataka",
-  "haveri,karnataka",
-  "koppal,karnataka",
-  "raichur,karnataka",
-  "ramanagara,karnataka",
-  "gadag,karnataka",
-  "mandya,karnataka",
-  "davangere,karnataka",
-  "chikmagalur,karnataka",
-  "salem,tamil nadu",
   "chennai,tamil nadu",
   "coimbatore,tamil nadu",
   "madurai,tamil nadu",
-  "tiruchirappalli,tamil nadu",
-  "tiruppur,tamil nadu",
-  "vellore,tamil nadu",
-  "erode,tamil nadu",
-  "dindigul,tamil nadu",
-  "kanchipuram,tamil nadu",
-  "thanjavur,tamil nadu",
-  "cuddalore,tamil nadu",
-  "nagercoil,tamil nadu",
-  "tiruvannamalai,tamil nadu",
-  "krishnagiri,tamil nadu",
-  "namakkal,tamil nadu",
-  "karur,tamil nadu",
-  "sivakasi,tamil nadu",
-  "hosur,tamil nadu",
-  "ambattur,tamil nadu",
-  "kumbakonam,tamil nadu",
-  "rajapalayam,tamil nadu",
-  "pudukkottai,tamil nadu",
-  "pollachi,tamil nadu",
-  "mettupalayam,tamil nadu",
-  "gudiyatham,tamil nadu",
-  "tambaram,tamil nadu",
-  "perambalur,tamil nadu",
-  "thiruvarur,tamil nadu",
-  "theni,tamil nadu",
-  "viluppuram,tamil nadu",
-  "vaniyambadi,tamil nadu",
-  "ranipet,tamil nadu",
-  "arakkonam,tamil nadu",
-  "tindivanam,tamil nadu",
-  "avadi,tamil nadu",
-  "melur,tamil nadu",
-  "chengalpattu,tamil nadu",
-  "tuticorin,tamil nadu",
-  "ramanathapuram,tamil nadu",
-  "ariyalur,tamil nadu",
-  "dharmapuri,tamil nadu",
-  "uthamapalayam,tamil nadu",
   "lucknow,uttar pradesh",
   "kanpur,uttar pradesh",
-  "ghaziabad,uttar pradesh",
-  "agra,uttar pradesh",
-  "varanasi,uttar pradesh",
-  "meerut,uttar pradesh",
   "noida,uttar pradesh",
-  "allahabad,uttar pradesh",
-  "bareilly,uttar pradesh",
-  "aligarh,uttar pradesh",
-  "moradabad,uttar pradesh",
-  "gorakhpur,uttar pradesh",
-  "firozabad,uttar pradesh",
-  "jhansi,uttar pradesh",
-  "muzaffarnagar,uttar pradesh",
-  "mathura,uttar pradesh",
-  "budaun,uttar pradesh",
-  "rampur,uttar pradesh",
-  "shahjahanpur,uttar pradesh",
-  "faizabad,uttar pradesh",
-  "sitapur,uttar pradesh",
-  "mirzapur,uttar pradesh",
-  "bulandshahr,uttar pradesh",
-  "sultanpur,uttar pradesh",
-  "gonda,uttar pradesh",
-  "azamgarh,uttar pradesh",
-  "etawah,uttar pradesh",
-  "bahraich,uttar pradesh",
-  "farrukhabad,uttar pradesh",
-  "mainpuri,uttar pradesh",
-  "lalitpur,uttar pradesh",
-  "amroha,uttar pradesh",
-  "bijnor,uttar pradesh",
-  "saharanpur,uttar pradesh",
-  "barabanki,uttar pradesh",
-  "ballia,uttar pradesh",
-  "rae bareli,uttar pradesh",
-  "unnao,uttar pradesh",
-  "basti,uttar pradesh",
-  "jaunpur,uttar pradesh",
-  "deoria,uttar pradesh",
-  "etah,uttar pradesh",
+  "agra,uttar pradesh",
+  "ahmedabad,gujarat",
+  "surat,gujarat",
+  "vadodara,gujarat",
+  "rajkot,gujarat",
+  "jaipur,rajasthan",
+  "udaipur,rajasthan",
+  "jodhpur,rajasthan",
+  "kota,rajasthan",
+  "patna,bihar",
+  "gaya,bihar",
+  "bhagalpur,bihar",
+  "ranchi,jharkhand",
+  "jamshedpur,jharkhand",
+  "dhanbad,jharkhand",
+  "bhopal,madhya pradesh",
+  "indore,madhya pradesh",
+  "gwalior,madhya pradesh",
+  "jabalpur,madhya pradesh",
+  "chandigarh,chandigarh",
+  "amritsar,punjab",
+  "ludhiana,punjab",
+  "jalandhar,punjab",
+  "patiala,punjab",
+  "dehradun,uttarakhand",
+  "haridwar,uttarakhand",
+  "nainital,uttarakhand",
+  "guwahati,assam",
+  "silchar,assam",
+  "dibrugarh,assam",
+  "bhubaneswar,odisha",
+  "cuttack,odisha",
+  "rourkela,odisha",
   "kolkata,west bengal",
   "howrah,west bengal",
   "durgapur,west bengal",
   "siliguri,west bengal",
-  "asansol,west bengal",
-  "kharagpur,west bengal",
-  "haldia,west bengal",
-  "bardhaman,west bengal",
-  "malda,west bengal",
-  "raiganj,west bengal",
-  "kalyani,west bengal",
-  "baharampur,west bengal",
-  "darjeeling,west bengal",
-  "krishnanagar,west bengal",
-  "cooch behar,west bengal",
-  "jalpaiguri,west bengal",
-  "chandannagar,west bengal",
-  "serampore,west bengal",
-  "uluberia,west bengal",
-  "halisahar,west bengal",
-  "bongaon,west bengal",
-  "mehsana,gujarat",
-  "vadodara,gujarat",
-  "rajkot,gujarat",
-  "bhavnagar,gujarat",
-  "jamnagar,gujarat",
-  "gandhinagar,gujarat",
-  "junagadh,gujarat",
-  "anand,gujarat",
-  "nadiad,gujarat",
-  "morbi,gujarat",
-  "bharuch,gujarat",
-  "bhuj,gujarat",
-  "porbandar,gujarat",
-  "palanpur,gujarat",
-  "valsad,gujarat",
-  "vapi,gujarat",
-  "navsari,gujarat",
-  "godhra,gujarat",
-  "patan,gujarat",
-  "dahod,gujarat",
-  "amreli,gujarat",
-  "surendranagar,gujarat",
-  "botad,gujarat",
-  "veraval,gujarat",
-  "dwarka,gujarat",
-  "kandla,gujarat",
-  "dholka,gujarat",
-  "mandvi,gujarat",
-  "wankaner,gujarat",
-  "modasa,gujarat",
-  "idar,gujarat",
-  "lunawada,gujarat",
-  "borsad,gujarat",
-  "khambhat,gujarat",
-  "manavadar,gujarat",
-  "savarkundla,gujarat",
-  "upleta,gujarat",
-  "jetpur,gujarat",
-  "dhoraji,gujarat",
-  "mangrol,gujarat",
-  "songadh,gujarat",
-  "vyara,gujarat",
-  "rajpipla,gujarat",
-  "silvassa,gujarat",
   "hyderabad,telangana",
   "warangal,telangana",
-  "nizamabad,telangana",
-  "khammam,telangana",
   "karimnagar,telangana",
-  "ramagundam,telangana",
-  "mahbubnagar,telangana",
-  "adilabad,telangana",
-  "suryapet,telangana",
-  "miryalaguda,telangana",
-  "jagtial,telangana",
-  "siddipet,telangana",
-  "mancherial,telangana",
-  "nalgonda,telangana",
-  "bhadradri,telangana",
-  "medak,telangana",
-  "wanaparthy,telangana",
-  "kamareddy,telangana",
-  "vikarabad,telangana",
-  "medchal,telangana",
-  "sangareddy,telangana",
-  "mahabubabad,telangana",
-  "narayanpet,telangana",
-  "jangaon,telangana",
-  "sircilla,telangana",
-  "gadwal,telangana",
-  "peddapalli,telangana",
-  "mulugu,telangana",
-  "nagarkurnool,telangana",
-  "bhupalpally,telangana",
-  "nirmal,telangana",
-  "bhainsa,telangana",
-  "korutla,telangana",
-  "armoor,telangana",
-  "manthani,telangana",
-  "metpally,telangana",
-  "tandur,telangana",
-  "zaheerabad,telangana",
-  "shadnagar,telangana",
-  "banswada,telangana",
-  "madnoor,telangana",
-  "jaipur,rajasthan",
-  "jodhpur,rajasthan",
-  "kota,rajasthan",
-  "ajmer,rajasthan",
-  "udaipur,rajasthan",
-  "bikaner,rajasthan",
-  "alwar,rajasthan",
-  "bharatpur,rajasthan",
-  "sikar,rajasthan",
-  "jhunjhunu,rajasthan",
-  "dholpur,rajasthan",
-  "churu,rajasthan",
-  "nagaur,rajasthan",
-  "pali,rajasthan",
-  "dausa,rajasthan",
-  "tonk,rajasthan",
-  "sawai madhopur,rajasthan",
-  "karauli,rajasthan",
-  "jaisalmer,rajasthan",
-  "sirohi,rajasthan",
-  "banswara,rajasthan",
-  "baran,rajasthan",
-  "dungarpur,rajasthan",
-  "bundi,rajasthan",
-  "jhalawar,rajasthan",
-  "pratapgarh,rajasthan",
-  "chittorgarh,rajasthan",
-  "hanumangarh,rajasthan",
-  "sri ganganagar,rajasthan",
-  "barmer,rajasthan",
-  "bhilwara,rajasthan",
-  "rajsamand,rajasthan"
+  "vijayawada,andhra pradesh",
+  "visakhapatnam,andhra pradesh",
+  "tirupati,andhra pradesh",
+  "panaji,goa",
+  "margao,goa",
+  "shimla,himachal pradesh",
+  "manali,himachal pradesh",
+  "kangra,himachal pradesh",
+  "srinagar,jammu and kashmir",
+  "jammu,jammu and kashmir",
+  "leh,ladakh",
+  "imphal,manipur",
+  "aizawl,mizoram",
+  "kohima,nagaland",
+  "itanagar,arunachal pradesh",
+  "agartala,tripura",
+  "gangtok,sikkim",
+  "shillong,meghalaya",
+  "port blair,andaman and nicobar islands",
+  "karaikal,puducherry",
+  "puducherry,puducherry",
+  "kavaratti,lakshadweep",
+  "dadra,dadra and nagar haveli and daman and diu",
+  "daman,dadra and nagar haveli and daman and diu"
 ]);
 const [list,setList]=useState([""]);
   const [search,setSearch]=useState("");
@@ -528,10 +307,14 @@ const [list,setList]=useState([""]);
   },[search]);
   const OnChangeSearch=(e)=>{
     e.preventDefault();
-    const {value}=e.currentTarget;
+    const {value,name}=e.currentTarget;
     ////console.log("value is this ",value);
+    setFilter((prev)=>{
+      const updated={...prev,[name]:value}
+      return updated;
+    })
     setList(()=>{
-      const updated=states.filter(state=>state.startsWith(value.toLowerCase())).map(state=>{
+      const updated=states.filter(state=>state.includes(value.toLowerCase())).map(state=>{
         const word=state.split(",");
         const toReturn = word
   .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
@@ -569,32 +352,54 @@ return toReturn;
      })
     return updated;
   });
+  setFilter((prev)=>{
+    const updated={...prev,search:value};
+    return updated;
+  })
   hide.current++;
 };
   
 
   const getDateSearch=(e)=>{
     e.preventDefault();
-    ////console.log("Now Submitted with value is teh another",search);
   }
-  const getDate=(e)=>{
-    e.preventDefault();
-    ////console.log("Now Submitted with value ",e.currentTarget.value);
-  }
+  
   const RemoveFil=()=>{
+    localStorage.removeItem('sentData');
     setFilter({
       location:"",
     comfort: [],
     Price: 0,
     Property: "",
-    cancellation:""
+    cancellation:"",
+    environment:[]
     });
     ////console.log("Filters is here ",Filters);
   }
+  const profile=()=>{
+    Navigate("/Profile");
+  }
   return (
     <>
+    {alert.showAlert && <Alert/>}
       <div className="Home">
         <div className="Heading">Home</div>
+        <div className="notification-bell">
+          <span className="bell-icon" onClick={(e)=>{Navigate("/AllMessages");console.log("s Navigating")}}>🔔</span>
+          {messages > 0 && <span className="message-count">{messages}</span>}
+        </div>
+        <button className="profile-btn" onClick={profile}>
+          <span className="profile-icon-span">👤</span>
+          <span className="profile-text">Profile</span>
+        </button>
+        <button className="favourites-btn" onClick={() => Navigate('/Favourites')}>
+          <span className="fav-icon">❤️</span>
+          <span className="fav-text">Favourites</span>
+        </button>
+        <button className="booked-homes-btn" onClick={() => Navigate('/ViewHomesBooked')}>
+          <span className="booked-icon">🏡</span>
+          <span className="booked-text">Available Soon</span>
+        </button>
         <button id="Log-Out" onClick={ChangeLogin}>Log Out</button>
         <div className="Navbar">
           
@@ -608,7 +413,7 @@ return toReturn;
               placeholder="Type Any Place You want"
               className="search-Input"
               onChange={OnChangeSearch}
-              value={search}
+              value={Filters.search}
               />
               <div className="Suggestion hiddenAt">
                 <ul >
@@ -619,16 +424,10 @@ return toReturn;
               </ul>
               </div>
               
-            <button htmlFor="site-search" className="search-Label" onClick={getDateSearch}>Search</button>
             </form>
             
 
-            {/* From Here I Will Write Date */}
-            <form onSubmit={getDate} action="/" method="GET">
-              <label htmlFor="dob" className="date-Label">Select Date</label>
-            <input type="date" id="dob" name="dob" onChange={getDate}/>
-            
-            </form>
+
             
 
             {/*From Here I will Write Filter Code*/}
@@ -645,12 +444,12 @@ return toReturn;
             <div className="content-area">
               <h1 id="h01">Recommended for you</h1>
               <div className="container">
-                <button
+                <button 
                   type="button"
-                  className="ImageDiv"
-                  onClick={add}
+                  className={`ImageDiv ${Filters.comfort.includes("Geyser")?"checked":''}`}
+                  onClick={(e)=>{add(e)}}
                   name="comfort"
-                  value="geyser"
+                  value="Geyser"
                 >
                   <img src="images-LoginPage\Geyser.jpeg" className="ImageID" />
                   <p>Geyser</p>
@@ -658,10 +457,10 @@ return toReturn;
 
                 <button
                   type="button"
-                  className="ImageDiv"
-                  onClick={add}
+                  className={`ImageDiv ${Filters.comfort.includes("Wi-fi")?"checked":''}`}
+                  onClick={(e)=>{add(e)}}
                   name="comfort"
-                  value="Wi-Fi"
+                  value="Wi-fi"
                 >
                   <img src="/images-LoginPage/wifi.jpg" className="ImageID" />
                   <p>Free Wifi</p>
@@ -669,20 +468,20 @@ return toReturn;
 
                 <button
                   type="button"
-                  className="ImageDiv"
-                  onClick={add}
+                  className={`ImageDiv ${Filters.comfort.includes("Washing-Machine")?"checked":''}`}
+                  onClick={(e)=>{add(e)}}
                   name="comfort"
-                  value="Washing-machine"
+                  value="Washing-Machine"
                 >
                   <img src="/images-LoginPage/washing.jpg" className="ImageID" />
                   <p>Washing Machine</p>
                 </button>
                 <button
                   type="button"
-                  className="ImageDiv"
-                  onClick={add}
+                  className={`ImageDiv ${Filters.comfort.includes("AC")?"checked":''}`}
+                  onClick={(e)=>{add(e)}}
                   name="comfort"
-                  value="Washing-machine"
+                  value="AC"
                 >
                   <img src="/images-LoginPage/Ac.jpeg" className="ImageID" />
                   <p>Ac</p>
@@ -727,20 +526,37 @@ return toReturn;
                 <button className="Property-buttons" name="Property" value="apartment" onClick={Property} type="button">apartment</button>
 
               </div>
+              
+              <h1 id="h01">Environment</h1>
+              <div className="EnvironmentOptions">
+                <label className="env-checkbox">
+                  <input type="checkbox" name="environment" value="Social" onClick={add}/>
+                  <span>Social</span>
+                </label>
+                <label className="env-checkbox">
+                  <input type="checkbox" name="environment" value="Romantic" onClick={add}/>
+                  <span>Romantic</span>
+                </label>
+                <label className="env-checkbox">
+                  <input type="checkbox" name="environment" value="Modern" onClick={add}/>
+                  <span>Modern</span>
+                </label>
+                <label className="env-checkbox">
+                  <input type="checkbox" name="environment" value="Nature" onClick={add}/>
+                  <span>Nature</span>
+                </label>
+              </div>
             </div>
           </div>
         </form>
         <div className="HomeArrayListSoo">
-          {console.log("loginstate is", typeof(loginstate),loginstate.current)}
-          {localStorage.getItem('loginstate') && <HomeArrayList className="Component-HomeArrayList" />}
+          {/* {console.log("loginstate is", typeof(loginstate),loginstate.current)} */}
+          {localStorage.getItem('loginstate') && <HomeArrayList className="Component-HomeArrayList" pages={pages} setPages={setPages}/>}
         </div>
         <h1 id="extra">Pages</h1>
+        {/* {console.log("THe number of Pages i got here in Home is",pages)} */}
         <div className="Pagination">
-          <button className="Pagi-buttons ToChange" name="firstButton" value="1"  onClick={ChangePage}>1</button>
-          <button className="Pagi-buttons ToChange" name="SecondButton" value="2" onClick={ChangePage}>2</button>
-          <button className="Pagi-buttons ToChange" name="ThridButton" value="3" onClick={ChangePage}>3</button>
-          <button className="Pagi-buttons ToChange" name="firstButton" value="4"  onClick={ChangePage}>4</button>
-          <button className="Pagi-buttons ToChange" name="SecondButton" value="5" onClick={ChangePage}>5</button>
+        {button.map(item=> item )}
         </div>
       </div>
     </>

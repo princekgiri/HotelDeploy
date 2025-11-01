@@ -1,59 +1,388 @@
-body.html{
-  overflow-y:auto;
-  overflow-x:hidden;
+﻿/* Modern Favourite Homes Page */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
-.green{
-  height:auto;
-  width:80vw;
-  margin-bottom:2rem;
-  padding-left:3rem;
-  padding-top:3rem;
-  padding-bottom:3rem;
-  display:grid;
-  grid-template-columns:repeat(3,auto);
-  grid-row:auto;
-  row-gap:1.7rem;
-  /* overflow:auto; */
-  border:2px solid red;
-  place-items:center;
-  
+
+body, html {
+    width: 100vw;
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: 'Inter', sans-serif;
 }
-.card-green{
-  aspect-ratio:1/1;
-  width:80%;
+
+/* Page Container */
+.favourites-page {
+    min-height: 100vh;
+    width: 100%;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #0a0a0a 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
 }
-.container-of-favourite{
-  
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
-.oImage{
-height:100%;
-width:100%  
+
+/* Floating Particles */
+.favourites-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 20% 30%, rgba(102, 126, 234, 0.15), transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(118, 75, 162, 0.15), transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(240, 147, 251, 0.1), transparent 50%);
+    animation: float 20s ease-in-out infinite;
+    pointer-events: none;
 }
-.oImage-div{
-height:80%;
-width:80%
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
 }
-.Home-Name{
-position:relative;
-  width:9rem;
-  left:4rem;
+
+/* Page Header */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    position: relative;
+    z-index: 1;
 }
-.Home-price{
-position:relative;
-  width:6rem;
-  left:5rem;
+
+.page-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 3s ease-in-out infinite;
+    background-size: 200% 200%;
+    margin: 0;
 }
-.Favourite-rating{
-  position:relative;
-  display:inline;
-  left:5.4rem;
+
+@keyframes shimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
 }
-h1{
-position:relative;
-left:26rem;
+
+.go-home-btn {
+    padding: 0.9rem 2rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
-.BookForFinal{
-  all:unset;
-  background-color:black;
-  color:wheat;
+
+.go-home-btn span {
+    font-size: 1.2rem;
+}
+
+.go-home-btn:hover {
+    background: linear-gradient(135deg, #764ba2, #667eea);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);
+}
+
+.go-home-btn:active {
+    transform: translateY(-1px);
+}
+
+/* Grid Layout */
+.favourites-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Card Styling */
+.fav-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5),
+                0 0 80px rgba(102, 126, 234, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.4s ease;
+    animation: slideUp 0.6s ease-out;
+    animation-fill-mode: both;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fav-card:nth-child(1) { animation-delay: 0.1s; }
+.fav-card:nth-child(2) { animation-delay: 0.2s; }
+.fav-card:nth-child(3) { animation-delay: 0.3s; }
+.fav-card:nth-child(4) { animation-delay: 0.4s; }
+.fav-card:nth-child(5) { animation-delay: 0.5s; }
+.fav-card:nth-child(6) { animation-delay: 0.6s; }
+
+.fav-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6),
+                0 0 100px rgba(102, 126, 234, 0.3);
+    border-color: rgba(102, 126, 234, 0.4);
+}
+
+/* Card Image */
+.card-image-container {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    position: relative;
+}
+
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.fav-card:hover .card-image {
+    transform: scale(1.1);
+}
+
+/* Card Content */
+.card-content {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.home-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: white;
+    margin: 0;
+    text-align: center;
+}
+
+/* Price and Rating Row */
+.price-rating-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.home-price {
+    flex: 1;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+    color: #667eea;
+    padding: 0.7rem 1rem;
+    border-radius: 15px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-align: center;
+    border: 1px solid rgba(102, 126, 234, 0.4);
+}
+
+.home-rating {
+    background: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+    padding: 0.7rem 1rem;
+    border-radius: 15px;
+    font-size: 1rem;
+    font-weight: 600;
+    border: 1px solid rgba(255, 193, 7, 0.4);
+    white-space: nowrap;
+}
+
+/* Card Actions */
+.card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-top: 0.5rem;
+}
+
+.book-btn {
+    width: 100%;
+    padding: 0.9rem 1.5rem;
+    background: linear-gradient(135deg, #48bb78, #38a169);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.book-btn span {
+    font-size: 1.2rem;
+}
+
+.book-btn:hover {
+    background: linear-gradient(135deg, #38a169, #48bb78);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(72, 187, 120, 0.6);
+}
+
+.book-btn:active {
+    transform: translateY(0);
+}
+
+.remove-btn {
+    width: 100%;
+    padding: 0.9rem 1.5rem;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.remove-btn span {
+    font-size: 1.1rem;
+}
+
+.remove-btn:hover {
+    background: linear-gradient(135deg, #ee5a24, #ff6b6b);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6);
+}
+
+.remove-btn:active {
+    transform: translateY(0);
+}
+
+/* Empty State */
+.empty-state {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.empty-icon {
+    font-size: 5rem;
+    margin-bottom: 1.5rem;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+.empty-state h2 {
+    color: white;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    font-family: 'Poppins', sans-serif;
+}
+
+.empty-state p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .favourites-page {
+        padding: 1.5rem 1rem;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .go-home-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .favourites-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .price-rating-row {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .home-price,
+    .home-rating {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .favourites-page {
+        padding: 1rem 0.5rem;
+    }
+
+    .card-content {
+        padding: 1rem;
+    }
+
+    .home-name {
+        font-size: 1.2rem;
+    }
+
+    .card-image-container {
+        height: 180px;
+    }
 }

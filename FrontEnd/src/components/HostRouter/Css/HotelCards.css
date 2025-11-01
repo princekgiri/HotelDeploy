@@ -1,0 +1,859 @@
+/* Dark Theme Hotel Cards */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;
+    font-family: 'Inter', sans-serif;
+    background: #0a0a0a;
+    position: relative;
+}
+
+/* Animated Stars Background */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+        radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+        radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.6), transparent),
+        radial-gradient(2px 2px at 160px 30px, #ddd, transparent);
+    background-repeat: repeat;
+    background-size: 200px 100px;
+    animation: sparkle 3s linear infinite;
+    z-index: -1;
+}
+
+@keyframes sparkle {
+    from { transform: translateY(0px); }
+    to { transform: translateY(-100px); }
+}
+
+/* Additional floating stars */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(1px 1px at 50px 50px, #fff, transparent),
+        radial-gradient(1px 1px at 100px 100px, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1px 1px at 150px 150px, #fff, transparent),
+        radial-gradient(1px 1px at 200px 200px, rgba(255,255,255,0.6), transparent);
+    background-repeat: repeat;
+    background-size: 300px 300px;
+    animation: twinkle 4s ease-in-out infinite alternate;
+    z-index: -1;
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+
+/* Main Container */
+.hotel-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, rgba(10, 10, 10, 0.95) 0%, rgba(20, 20, 30, 0.98) 100%);
+    padding: 3rem 1rem;
+    backdrop-filter: blur(10px);
+}
+
+.hotel-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Hotel Header */
+.hotel-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.hotel-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hotel-subtitle {
+    font-size: 1.125rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Action Buttons Container */
+.action-buttons {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    margin-bottom: 3rem;
+}
+
+.logout-btn,
+.add-homes-btn {
+    padding: 0.9rem 2rem;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.logout-btn {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+}
+
+.logout-btn:hover {
+    background: linear-gradient(135deg, #ee5a24, #ff6b6b);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.5);
+}
+
+.add-homes-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.add-homes-btn:hover {
+    background: linear-gradient(135deg, #764ba2, #667eea);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+}
+
+/* Hotel Grid */
+
+/* Grid Layout */
+.hotel-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+@media (min-width: 768px) {
+    .hotel-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .hotel-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Card Styling */
+.hotel-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 30px rgba(102, 126, 234, 0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    transform: translateY(0);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.hotel-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4), 0 0 50px rgba(102, 126, 234, 0.2);
+    border-color: rgba(102, 126, 234, 0.3);
+}
+
+/* Image Container */
+.hotel-image {
+    height: 12rem;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px 20px 0 0;
+}
+
+.hotel-image::before {
+    content: '🏠';
+    font-size: 4rem;
+    opacity: 0.7;
+    color: white;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.hotel-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Card Content */
+.hotel-content {
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.hotel-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+    transition: color 0.3s ease;
+}
+
+.hotel-card:hover .hotel-name {
+    color: #667eea;
+}
+
+.hotel-location {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.hotel-location::before {
+    content: '📍';
+    margin-right: 0.5rem;
+}
+
+/* Price Section */
+.hotel-price-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.hotel-price {
+    display: flex;
+    align-items: center;
+}
+
+.hotel-price-amount {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #48bb78;
+    text-shadow: 0 0 10px rgba(72, 187, 120, 0.3);
+}
+
+.hotel-price-period {
+    color: rgba(255, 255, 255, 0.7);
+    margin-left: 0.5rem;
+}
+
+.hotel-rating {
+    display: flex;
+    align-items: center;
+    color: #ffc107;
+}
+
+.hotel-rating::before {
+    content: '⭐';
+    margin-right: 0.25rem;
+    filter: drop-shadow(0 0 5px rgba(255, 193, 7, 0.5));
+}
+
+.hotel-rating-text {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Facilities Section */
+.hotel-facilities {
+    margin-bottom: 1.5rem;
+}
+
+.hotel-facilities-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+.hotel-facilities-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.hotel-facility {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    transition: transform 0.2s ease;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.hotel-facility:hover {
+    transform: scale(1.05);
+}
+
+/* Facility Colors - Dark Theme */
+.facility-wifi { 
+    background: rgba(59, 130, 246, 0.2); 
+    color: #60a5fa; 
+    border-color: rgba(59, 130, 246, 0.3);
+}
+.facility-parking { 
+    background: rgba(34, 197, 94, 0.2); 
+    color: #4ade80; 
+    border-color: rgba(34, 197, 94, 0.3);
+}
+.facility-ocean-view { 
+    background: rgba(6, 182, 212, 0.2); 
+    color: #22d3ee; 
+    border-color: rgba(6, 182, 212, 0.3);
+}
+.facility-kitchen { 
+    background: rgba(251, 146, 60, 0.2); 
+    color: #fb923c; 
+    border-color: rgba(251, 146, 60, 0.3);
+}
+.facility-washer { 
+    background: rgba(168, 85, 247, 0.2); 
+    color: #a855f7; 
+    border-color: rgba(168, 85, 247, 0.3);
+}
+.facility-air-conditioning { 
+    background: rgba(14, 165, 233, 0.2); 
+    color: #0ea5e9; 
+    border-color: rgba(14, 165, 233, 0.3);
+}
+.facility-elevator { 
+    background: rgba(107, 114, 128, 0.2); 
+    color: #9ca3af; 
+    border-color: rgba(107, 114, 128, 0.3);
+}
+.facility-fireplace { 
+    background: rgba(239, 68, 68, 0.2); 
+    color: #f87171; 
+    border-color: rgba(239, 68, 68, 0.3);
+}
+.facility-hot-tub { 
+    background: rgba(236, 72, 153, 0.2); 
+    color: #f472b6; 
+    border-color: rgba(236, 72, 153, 0.3);
+}
+.facility-heating { 
+    background: rgba(245, 158, 11, 0.2); 
+    color: #f59e0b; 
+    border-color: rgba(245, 158, 11, 0.3);
+}
+.facility-downtown-access { 
+    background: rgba(99, 102, 241, 0.2); 
+    color: #818cf8; 
+    border-color: rgba(99, 102, 241, 0.3);
+}
+.facility-bbq-grill { 
+    background: rgba(245, 158, 11, 0.2); 
+    color: #f59e0b; 
+    border-color: rgba(245, 158, 11, 0.3);
+}
+.facility-lake-view { 
+    background: rgba(20, 184, 166, 0.2); 
+    color: #14b8a6; 
+    border-color: rgba(20, 184, 166, 0.3);
+}
+
+/* Delete Button */
+.delete-btn {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 10;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #2d2d2d, #1a1a1a);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 107, 107, 0.2);
+    transition: all 0.3s ease;
+}
+
+.delete-btn:hover {
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.8), 0 0 40px rgba(255, 107, 107, 0.4);
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    border-color: rgba(255, 107, 107, 0.6);
+}
+
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Modal Content */
+.modal-content {
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.98), rgba(15, 15, 35, 0.98));
+    border-radius: 20px;
+    padding: 2.5rem;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 100px rgba(102, 126, 234, 0.3);
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    position: relative;
+    z-index: 10000;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Modal Close Button */
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    font-size: 2rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+    background: rgba(255, 107, 107, 0.8);
+    transform: rotate(90deg);
+}
+
+/* Modal Title */
+.modal-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 2rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Modal Form */
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Modal Field */
+.modal-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.modal-field label {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.modal-field input {
+    padding: 0.9rem 1.2rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.modal-field input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.modal-field input:focus {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.modal-field input[type="file"] {
+    padding: 0.7rem;
+    cursor: pointer;
+}
+
+/* Modal Radio Grid */
+.modal-radio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+}
+
+.modal-radio-option {
+    position: relative;
+}
+
+.modal-radio-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.modal-radio-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+    font-size: 1.5rem;
+}
+
+.modal-radio-option input[type="radio"]:checked + .modal-radio-label {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+    transform: scale(1.05);
+    color: white;
+}
+
+.modal-radio-label:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(102, 126, 234, 0.5);
+    transform: translateY(-2px);
+}
+
+/* Modal Checkbox Grid */
+.modal-checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 1rem;
+}
+
+.modal-checkbox-option {
+    position: relative;
+}
+
+.modal-checkbox-option input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.modal-checkbox-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+    font-size: 1.5rem;
+}
+
+.modal-checkbox-option input[type="checkbox"]:checked + .modal-checkbox-label {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+    transform: scale(1.05);
+    color: white;
+}
+
+.modal-checkbox-label:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(102, 126, 234, 0.5);
+    transform: translateY(-2px);
+}
+
+/* Modal Input Styles */
+.modal-input {
+    padding: 0.9rem 1.2rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.modal-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.modal-input:focus {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.modal-file-input {
+    padding: 0.7rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+}
+
+/* Modal Photo Preview Styles */
+.modal-photos-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+}
+
+.modal-preview-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    transition: all 0.3s ease;
+}
+
+.modal-preview-img:hover {
+    transform: scale(1.1);
+    border-color: #667eea;
+    box-shadow: 0 0 15px rgba(102, 126, 234, 0.5);
+}
+
+.modal-preview-video {
+    width: 200px;
+    height: 150px;
+    border-radius: 8px;
+    border: 2px solid rgba(102, 126, 234, 0.3);
+}
+
+/* Scrollbar Styling for Modal */
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #764ba2, #667eea);
+}
+
+/* Modal Submit Button */
+.modal-submit-section {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: center;
+}
+
+.modal-submit-btn {
+    padding: 1rem 3rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.modal-submit-btn:hover {
+    background: linear-gradient(135deg, #764ba2, #667eea);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+}
+
+.modal-submit-btn:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+/* Responsive Design */
+
+.hotel-book-btn {
+    flex: 1;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    font-size: 1rem;
+}
+
+.hotel-book-btn:hover {
+    background: linear-gradient(135deg, #764ba2, #667eea);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.hotel-fav-btn {
+    padding: 0.75rem 1.2rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    font-size: 1.3rem;
+    margin-left: 1rem;
+}
+
+.hotel-fav-btn:hover {
+    border-color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.2);
+    transform: translateY(-2px) scale(1.1);
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.hotel-fav-btn::before {
+    content: '';
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hotel-container {
+        padding: 2rem 1rem;
+    }
+    
+    .hotel-title {
+        font-size: 2rem;
+    }
+    
+    .hotel-grid {
+        gap: 1.5rem;
+    }
+    
+    .hotel-content {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hotel-container {
+        padding: 1rem 0.5rem;
+    }
+    
+    .hotel-title {
+        font-size: 1.5rem;
+    }
+    
+    .hotel-subtitle {
+        font-size: 1rem;
+    }
+    
+    .hotel-image {
+        height: 10rem;
+    }
+    
+    .hotel-content {
+        padding: 0.8rem;
+    }
+    
+    .hotel-actions {
+        flex-direction: column;
+    }
+}

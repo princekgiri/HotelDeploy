@@ -31,9 +31,10 @@ function BookedHomes(){
    <h1>Your Booked homes</h1> 
    <div className="Large-div">
      {bookedhome.map((home, index) => { 
+      {console.log("Here is home you got ",home)}
       return (
       <div className="BookedHomes-container" key={index}> 
-      <div className="Image-BookedHomes"><img src={home.image} alt="" className="Image-div" /></div>
+      <div className="Image-BookedHomes"><img src={home.photo[0].housePhotos[1]} alt="" className="Image-div" /></div>
       {console.log(home)}
       <div className="Name-BookedHomes">{home.name}</div> 
       <div className="Price-BookedHomes">{home.price}

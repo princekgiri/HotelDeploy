@@ -6,7 +6,7 @@ function FavouriteHomes(){
   const Navigate=useNavigate();
   const [favourite,setFavourite]=useState([]);
   const {RemoveHome} =useSend();
-  useEffect( ()=>{
+  useEffect(()=>{
     const doAll= async()=>{
     const url="http://localhost:3000/user/personalfavourite";
     const response=await fetch(url,{
@@ -17,14 +17,12 @@ function FavouriteHomes(){
       credentials:"include"
     })
     const res=await response.json();
-    const array=res.array;
     console.log("Res that  got is ",res);
-    console.log("Array that  got is ",array);
-    if(JSON.stringify(array)!=JSON.stringify(favourite)){
-    setFavourite(array);}
+    console.log("Array that  got is ");
+    setFavourite(res.array);
   };
   doAll();
-  },[favourite]);
+  },[]);
   const onClickGo=()=>{
     Navigate("/home");
   }
@@ -53,21 +51,54 @@ function FavouriteHomes(){
   }
   return(
     <>
-      <h1>Favourite Homes</h1>
-    <div className="green">
-      {favourite.map((home,index)=>{
-        return(
-          <div className="card-green" key={index}>
-          <div onClick={onClickGo}>Go To Home</div>
-        <div className="oImage-div"><img src={home.image} className="oImage"/></div>
-        <div className="Home-Name">{home.name}</div>
-        <div className="Home-price">{home.price}</div>
-        <div className="Favourite-rating">Rating 5.5</div>
-        <div><button onClick={(e)=>Remove(e,home)}>Remove From favourite</button></div>
-        <button className="BookForFinal" onClick={(e)=>BookForFinalize(e,home._id)}>Button For Final</button>
+    <div className="favourites-page">
+      <div className="page-header">
+        <h1 className="page-title">My Favourite Homes</h1>
+        <button className="go-home-btn" onClick={onClickGo}>
+          <span>🏠</span> Back to Home
+        </button>
       </div>
-      )
-      })}
+
+      <div className="favourites-grid">
+        {favourite.length > 0 ? (
+          favourite.map((home, index) => {
+            return (
+              <div className="fav-card" key={index}>
+                <div className="card-image-container">
+                  <img src={home.image} alt={home.name} className="card-image"/>
+                </div>
+                
+                <div className="card-content">
+                  <h3 className="home-name">{home.name}</h3>
+                  
+                  <div className="price-rating-row">
+                    <div className="home-price">₹{home.price}</div>
+                    <div className="home-rating">⭐ 5.5</div>
+                  </div>
+                  
+                  <div className="card-actions">
+                    <button className="book-btn" onClick={(e) => BookForFinalize(e, home._id)}>
+                      <span>📅</span> Book Now
+                    </button>
+                    <button className="remove-btn" onClick={(e) => Remove(e, home)}>
+                      <span>❌</span> Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )
+          })
+        ) : (
+          <div className="empty-state">
+            <div className="empty-icon">💔</div>
+            <h2>No Favourites Yet</h2>
+            <p>Start adding homes to your favourites!</p>
+            <button className="go-home-btn" onClick={onClickGo}>
+              Browse Homes
+            </button>
+          </div>
+        )}
+      </div>
     </div>
     </>
   )

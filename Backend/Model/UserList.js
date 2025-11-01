@@ -11,9 +11,11 @@ const UserSchema=new mongoose.Schema({
   },
   password:{
     type:String,
-    required:true
   },
   role:{
+    type:String
+  },
+  number:{
     type:String
   },
   favourites:[
@@ -26,6 +28,15 @@ const UserSchema=new mongoose.Schema({
     {
       type:mongoose.Schema.Types.ObjectId,
       ref:"hotelnames"
+    }
+  ],
+  reviewCount:{
+    type:Number
+  },
+  messages:[
+    {
+      email:String,
+      reply:String
     }
   ]
 })

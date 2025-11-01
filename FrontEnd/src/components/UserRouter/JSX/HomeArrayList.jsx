@@ -7,13 +7,18 @@ import {noteContext} from './NoteState/NoteState'
 //Fetch Function
 
 
-function HomeArrayList(){
+function HomeArrayList({pages,setPages}){
+  const go=useRef(false);
+  console.log("Go",go);
   const Navigate=useNavigate();
-  const {ArrayList,setArrayList,startpage,setStartPage,setEndPage,Endpage,favourite,setFavourite}=useContext(noteContext);
+  const {ArrayList,setArrayList,startpage,setStartPage,setEndPage,Endpage,favourite,setFavourite,showPersonal,setShowpersonal}=useContext(noteContext);
   const DefaultImage="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688";
   useEffect(()=>
     {
-    console.log("HomeArrayList Runs Here Runs Here");
+      if(localStorage.getItem('FirstDate')) localStorage.removeItem('FirstDate');
+      if(localStorage.getItem('SecondDate')) localStorage.removeItem('SecondDate');
+      if(localStorage.getItem('priceTotal')) localStorage.removeItem('priceTotal');
+    // console.log("HomeArrayList Runs Here Runs Here");
     const fetchData= async ()=>{
     const url="http://localhost:3000/user/AllHomes";
     const response=await fetch(url,{
@@ -25,44 +30,92 @@ function HomeArrayList(){
     })
     const res=await response.json();
     ////console.log("The res That we is",res);
-    setArrayList(res);
+    const toPassinPage=Math.ceil(res.lengthOfHotels/12)
+    console.log("The Homes are ",res.Hotels);
+    setPages(toPassinPage);
+    setArrayList(res.Hotels);
   }
-  fetchData();
+  if(!localStorage.getItem('sentData')){
+    // console.log("It is even running now does not matter " );
+  fetchData();}
+  const fetchuser=async ()=>{
+    const url="http://localhost:3000/user/Passname";
+  const response=await fetch(url,{
+    method:"GET",
+    credentials:"include"
+  })
+  const res=await response.json();
+  setShowpersonal((prev)=>{
+    const updated={...prev,user:res.user}
+    console.log("updated is ",updated);
+    localStorage.setItem('Username',updated.user.name);
+    return updated;
+  })
+  }
+  fetchuser();
 }
-  ,[])
-  const favouriteGo=async (e,home)=>{
-    e.preventDefault();
-    const url=`http://localhost:3000/user/FavouriteHome/${home._id}`
-    const response=await fetch(url,{
-      method:'GET',
-      credentials:"include"
+  ,[]);
+  useEffect(() => {
+    if (showPersonal.home && go.current) {
+      console.log("✅ Home set successfully:", showPersonal);
+      localStorage.setItem('home',showPersonal.home._id);
+      localStorage.setItem('email',showPersonal.user.email);
+      Navigate("/HomePersonal");
+    }
+  }, [showPersonal]);
+  const homeDetails=(e,home)=>{
+    go.current=true;
+    const {name}=e.target;
+      setShowpersonal((prev)=>{
+      const updated={...prev,[name]:home};
+      localStorage.setItem('Owneremail',updated.home.Owner);
+      localStorage.setItem('Ownername',updated.home.Ownername);
+      return updated;
     })
-    const res=await response.json();
-    console.log("The user that i got ",res.home);
-    setFavourite(res.home);
-    Navigate("/FavouriteHome");
-  }
+}
 return(
   <>
   <div className="ArrayList">
-  {ArrayList.slice(startpage,Endpage).map((home,index)=>{
-    return(
-    <div className="card" key={index}>
-        <button className="imgHome"><img src={`${home.image?home.image:DefaultImage}`} alt="" className="card-imaged" /></button>
-        <div className="HomeName">{home.name}&nbsp;</div>
-        <div className="HomeName">{home.location?.[0] || ""}&nbsp;{home.location?.[1] || ""}</div>
-        <div className="span-elements"><span>${home.price}</span><span>Monthly,daily</span><span>Rating</span></div>
-        {home.Booked=="yes" && `Booked : ${home.Booked}`}
-        <button to="/About" className="Card-button" onClick={(e)=>{favouriteGo(e,home)}}>&hearts;</button>
-     </div>
-    )
-  })}
+    {/* {console.log("We got the array list a s here in Array ",ArrayList)} */}
+  {ArrayList
+    .filter(home => home.Booked !== "true" || home.SecondDate=='') // Filter out booked homes FIRST
+    .slice(startpage, Endpage)              // Then slice for pagination
+    .map((home, index) => {
+      console.log("StartPage si here ", startpage)
+      return(
+        <div className="card" key={index}>
+          <button className="imgHome">
+            <img 
+              src={home.photo[0].housePhotos[0]} 
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = '/src/images/picture6.jpg'
+              }}
+              alt="" 
+              className="card-imaged" 
+            />
+          </button>
+          <div className="HomeName">{home.name}&nbsp;</div>
+          <button name="home" onClick={(e) => { homeDetails(e, home) }}>
+            Home Details
+          </button>
+          <div className="HomeName">
+            {home.location?.[0] || ""}&nbsp;{home.location?.[1] || ""}
+          </div>
+          <div className="span-elements">
+            <span>${home.price}</span>
+            <span>Monthly</span>
+          </div>
+        </div>
+      )
+    })
+  }
   </div>
-    
   </>
 )
 }
 export {HomeArrayList}
+// export {go}
 
 
 

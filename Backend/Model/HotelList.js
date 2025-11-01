@@ -14,12 +14,10 @@ const HotelSchema = mongoose.Schema({
     required: true
   },
   occupancy: {
-    type: String,         // example: "solo", "couple", "family"
-    required: true
+    type: String
   },
   pets: {
-    type: String,         // "yes" / "no"
-    required: true
+    type: String         // "yes" / "no
   },
   propertyType: {
     type: String,         // example: "apartment", "villa"
@@ -42,12 +40,45 @@ const HotelSchema = mongoose.Schema({
     required: true
   },
   booking: {
-    type: String,         // "instant" or other types
-    required: true
+    type: String
   },
+  photo:[
+    {houseVideos:[String],
+    housePhotos:[String],
+    PhonePe:{type:String},
+    Paytm:{type:String},
+    GooglePay:{type:String}}
+  ],
   Booked:{
     type:String,
     default:"no"
+  },
+  review:[
+    {
+      name:String,
+      review:String,
+      email:String,
+      likes:Number,
+      replies:[
+        {
+          email:String,
+          reply:String,
+          likes:Number
+        }
+      ]
+    }
+  ],
+  Owner:{
+    type:String
+  },
+  Ownername:{
+    type:String
+  },
+  FirstDate:{
+    type:String
+  },
+  SecondDate:{
+    type:String
   }
 });
 

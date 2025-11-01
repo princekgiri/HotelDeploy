@@ -1,45 +1,224 @@
-.BookedHomes-Big{
-  display:grid;
-  grid-template-columns:repeat(10,1fr);
-  grid-template-rows:auto;
-  width:100%;
-  height:100%;
+/* Dark Theme Booked Homes Page */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
-.Large-div{
-  grid-column:2/10;
-  grid-row:2/6;
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(33%,1fr));
-  grid-template-rows:auto;
-  /* border:1px solid red; */
-  margin-bottom:1rem;
+
+body, html {
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;
+    font-family: 'Inter', sans-serif;
+    background: #0a0a0a;
+    position: relative;
 }
-.BookedHomes-container{
-  width:70%;
-  aspect-ratio:1/1;
-  /* gap:1rem; */
+
+/* Animated Stars Background */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+        radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+        radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.6), transparent),
+        radial-gradient(2px 2px at 160px 30px, #ddd, transparent);
+    background-repeat: repeat;
+    background-size: 200px 100px;
+    animation: sparkle 3s linear infinite;
+    z-index: -1;
 }
-.Image-BookedHomes{
-  aspect-ratio:1/1;
-  width:70%;
-  position:relative;
-  left:1.5rem;
+
+@keyframes sparkle {
+    from { transform: translateY(0px); }
+    to { transform: translateY(-100px); }
 }
-.Image-divooo{
-  height:100%;
-  width:100%;
-  /* padding:1.5rem 1.5rem 1rem 3rem; */
+
+/* Additional floating stars */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(1px 1px at 50px 50px, #fff, transparent),
+        radial-gradient(1px 1px at 100px 100px, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1px 1px at 150px 150px, #fff, transparent),
+        radial-gradient(1px 1px at 200px 200px, rgba(255,255,255,0.6), transparent);
+    background-repeat: repeat;
+    background-size: 300px 300px;
+    animation: twinkle 4s ease-in-out infinite alternate;
+    z-index: -1;
 }
-h1{
-  position:relative;
-  left:1rem;
-  grid-column:4/8;
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
 }
-.Price-BookedHomes{
-  position:relative;
-  left:7rem;
+
+.BookedHomes-Big {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: auto;
+    width: 100%;
+    min-height: 100vh;
+    padding: 2rem;
+    background: linear-gradient(135deg, rgba(10, 10, 10, 0.95) 0%, rgba(20, 20, 30, 0.98) 100%);
+    backdrop-filter: blur(10px);
 }
-.Name-BookedHomes{
-  position:relative;
-  left:7rem;
+
+.Large-div {
+    grid-column: 2/10;
+    grid-row: 2/6;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 50px rgba(102, 126, 234, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+}
+
+.BookedHomes-container {
+    width: 100%;
+    aspect-ratio: 1/1;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 30px rgba(102, 126, 234, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.BookedHomes-container:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 0 0 50px rgba(102, 126, 234, 0.2);
+    border-color: rgba(102, 126, 234, 0.3);
+}
+
+.Image-BookedHomes {
+    aspect-ratio: 1/1;
+    width: 100%;
+    position: relative;
+    left: 0;
+    height: 60%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.BookedHomes-container:hover .Image-BookedHomes {
+    transform: scale(1.05);
+}
+
+.Image-divooo {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px 15px 0 0;
+}
+
+h1 {
+    position: relative;
+    left: 0;
+    grid-column: 1/-1;
+    color: #ffffff;
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin: 2rem 0;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+}
+
+.Price-BookedHomes {
+    position: relative;
+    left: 0;
+    color: #667eea;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-align: center;
+    background: rgba(102, 126, 234, 0.2);
+    padding: 0.8rem 1.5rem;
+    border-radius: 20px;
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    margin: 1rem;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.Price-BookedHomes:hover {
+    background: rgba(102, 126, 234, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+}
+
+.Name-BookedHomes {
+    position: relative;
+    left: 0;
+    color: #ffffff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-align: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    margin: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.Name-BookedHomes:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .BookedHomes-Big {
+        padding: 1rem;
+    }
+    
+    .Large-div {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .BookedHomes-Big {
+        padding: 0.5rem;
+    }
+    
+    .Large-div {
+        padding: 0.5rem;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+    }
 }
