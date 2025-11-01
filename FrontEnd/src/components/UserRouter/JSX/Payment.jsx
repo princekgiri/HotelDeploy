@@ -1,7 +1,8 @@
-﻿import React ,{useEffect,useState,useContext}from 'react';
+import React ,{useEffect,useState,useContext}from 'react';
 import {useNavigate} from 'react-router-dom';
 import '../Css/Payment.css';
 import {noteContext} from './NoteState/NoteState'
+import API_BASE_URL from '../../../config'
 
 const Payment = () => {
     const Navigate=useNavigate();
@@ -9,7 +10,7 @@ const Payment = () => {
     const {date}=useContext(noteContext);
   useEffect(()=>{
     const goAndFetch=async ()=>{
-    const url="http://localhost:3000/user/GetPersonal";
+    const url=`${API_BASE_URL}/user/GetPersonal`;
     const id=localStorage.getItem('home').toString();
     console.log("Id is this ",id)
     const reponse=await fetch(url,{
@@ -34,7 +35,7 @@ const Payment = () => {
     const BookSure=async (e)=>{
         e.preventDefault();
     const BookFinal=localStorage.getItem('home');
-    const url = `http://localhost:3000/user/homeAddBooked/${BookFinal}`; 
+    const url = `${API_BASE_URL}/user/homeAddBooked/${BookFinal}`; 
     console.log(url);
     try {
       const response = await fetch(url, {
@@ -100,28 +101,28 @@ const Payment = () => {
         </div>
 
         <div className="payment-options-section">
-          <h3 className="payment-options-title">💳 Choose Your Payment Method</h3>
+          <h3 className="payment-options-title">?? Choose Your Payment Method</h3>
           <div className="payment-options-row">
             <button className="payment-option-btn" value={home.photo[0].PhonePe}
             onClick={ToChnagePhoto}>
-              <span className="payment-icon">💜</span>
+              <span className="payment-icon">??</span>
               <span className="payment-name">PhonePe</span>
             </button>
             <button className="payment-option-btn" value={home.photo[0].Paytm}
             onClick={ToChnagePhoto}>
-              <span className="payment-icon">💙</span>
+              <span className="payment-icon">??</span>
               <span className="payment-name">Paytm</span>
             </button>
             <button className="payment-option-btn" value={home.photo[0].GooglePay}
             onClick={ToChnagePhoto}>
-              <span className="payment-icon">🔷</span>
+              <span className="payment-icon">??</span>
               <span className="payment-name">Google Pay</span>
             </button>
           </div>
         </div>
 
         <div className="security-info">
-          <span className="security-icon">🔒</span>
+          <span className="security-icon">??</span>
           <span className="security-text">100% Secure Payment</span>
         </div>
 

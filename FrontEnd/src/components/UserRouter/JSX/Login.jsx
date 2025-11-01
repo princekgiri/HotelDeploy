@@ -7,6 +7,8 @@ import Swal from 'sweetalert2'
 import AllofBackend from './FunctionToBackend'
 import { noteContext } from './NoteState/NoteState'
 import { noteContextSo } from '../../HostRouter/JSX/Notestate'
+import API_BASE_URL from '../../../config'
+
 function Login() {
   const { logincheck, logincheckstate, setLogincheckstate } = useContext(noteContextSo);
   const { LoginCheck } = AllofBackend();
@@ -75,7 +77,7 @@ function Login() {
       if (result.isConfirmed){ role = 'host'}
       else if(result.isDenied){role = 'user'};
       console.log("Role is ", role);
-      const url = 'http://localhost:3000/user/api-google';
+      const url = `${API_BASE_URL}/user/api-google`;
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -143,7 +145,7 @@ function Login() {
           }
         }).then(async (result) => {
           console.log(result.value);
-          const url = `http://localhost:3000/${role}/SignUp`;
+          const url = `${API_BASE_URL}/${role}/SignUp`;
           const response = await fetch(url, {
             method: 'POST',
             headers: {

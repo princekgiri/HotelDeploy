@@ -5,6 +5,8 @@ import {HomeArrayList} from './HomeArrayList'
 import useSend from './FunctionToBackend'
 import Alert from './Alert'
 import {useNavigate} from 'react-router-dom'
+import API_BASE_URL from '../../../config'
+
 function Home() {
   const Navigate=useNavigate();
   const {send,profileInfo,fetchMessages,messages, setMessages}=useSend();
@@ -26,7 +28,7 @@ function Home() {
   },[loginstate]);
 
   const ChangeLogin=async ()=>{
-    const url="http://localhost:3000/user/Logout"
+    const url=`${API_BASE_URL}/user/Logout`
     const response=await fetch(url,{
       method:'GET',
       credentials:"include"

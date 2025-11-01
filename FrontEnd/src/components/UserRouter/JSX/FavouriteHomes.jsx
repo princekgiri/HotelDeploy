@@ -2,13 +2,15 @@ import '../Css/FavouriteHomesCss.css';
 import {useState,useEffect} from 'react'
 import {useNavigate} from 'react-router-dom'
 import useSend from './FunctionToBackend'
+import API_BASE_URL from '../../../config'
+
 function FavouriteHomes(){
   const Navigate=useNavigate();
   const [favourite,setFavourite]=useState([]);
   const {RemoveHome} =useSend();
   useEffect(()=>{
     const doAll= async()=>{
-    const url="http://localhost:3000/user/personalfavourite";
+    const url=`${API_BASE_URL}/user/personalfavourite`;
     const response=await fetch(url,{
       method:"GET",
       headers:{
@@ -27,7 +29,7 @@ function FavouriteHomes(){
     Navigate("/home");
   }
   const BookForFinalize=async (e,ida)=>{
-    const url="http://localhost:3000/user/AddToBooked";
+    const url=`${API_BASE_URL}/user/AddToBooked`;
     console.log("The sent id is ",ida);
     const response=await fetch(url,{
       method:"POST",

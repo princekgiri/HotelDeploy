@@ -3,6 +3,8 @@ import {useNavigate} from 'react-router-dom'
 import '../Css/HomePersonal.css';
 import {noteContext} from './NoteState/NoteState'
 import Alert from './Alert'
+import API_BASE_URL from '../../../config'
+
 // import {go} from './HomeArrayList'
 const HomePersonal = () => {
   const Navigate=useNavigate();
@@ -49,7 +51,7 @@ useEffect(() => {
   const HomeId=localStorage.getItem('home');
   const fetchHome = async () => {
     if(!showPersonal.home || Object.keys(showPersonal.home).length===0){
-      const url = "http://localhost:3000/user/GetHome";
+      const url = `${API_BASE_URL}/user/GetHome`;
       const response = await fetch(url, {
         method: "POST",
         headers:{
@@ -72,7 +74,7 @@ useEffect(() => {
     e.preventDefault();
     console.log(showPersonal._id);
     console.log(review);
-    const url = `http://localhost:3000/user/home/${showPersonal.home._id}`; 
+    const url = `${API_BASE_URL}/user/home/${showPersonal.home._id}`; 
     console.log(url);
     try {
       const response = await fetch(url, {
@@ -131,7 +133,7 @@ useEffect(() => {
   const Addcomment=(email,id,replyId)=>{
     console.log("Reply is being added ",email);
     console.log("Show is tthis now ",id);
-    const url = "http://localhost:3000/user/MessagesPost";
+    const url = `${API_BASE_URL}/user/MessagesPost`;
     const localEmail=localStorage.getItem('email');
     const MessagePo=async (localEmail,id,replyId)=>{
       try {

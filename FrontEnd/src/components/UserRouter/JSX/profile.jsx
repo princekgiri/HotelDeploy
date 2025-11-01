@@ -2,6 +2,8 @@ import React,{useState,useEffect,useRef,useContext} from 'react';
 import '../Css/profile.css';
 import useBackend from './FunctionToBackend'
 import {noteContext} from './NoteState/NoteState'
+import API_BASE_URL from '../../../config'
+
 const Profile = () => {
     const {profileInfo}=useBackend();
     const {details,setDetails}=useContext(noteContext);
@@ -19,7 +21,7 @@ const Profile = () => {
         // }
         // getData();
         const AllHomes=async ()=>{
-          const url="http://localhost:3000/user/ToPopuate";
+          const url=`${API_BASE_URL}/user/ToPopuate`;
           const response=await fetch(url,{
             method:"GET",
             credentials:"include"
@@ -37,7 +39,7 @@ const Profile = () => {
     const Delete=async (e)=>{
       e.preventDefault();
       const HomeId=localStorage.getItem('home');
-      const url= `http://localhost:3000/user/TodeleteFav/${HomeId}`;
+      const url= `${API_BASE_URL}/user/TodeleteFav/${HomeId}`;
       const response =await fetch(url,{
         method:"POST",
         credentials:"include"
@@ -67,7 +69,7 @@ const Profile = () => {
         setIsModalOpen(true);
     };
     const formSubmit=async ()=>{
-      const url="http://localhost:3000/user/Toupdate";
+      const url=`${API_BASE_URL}/user/Toupdate`;
       const response=await fetch(url,{
         method:"POST",
         headers:{

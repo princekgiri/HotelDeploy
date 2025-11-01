@@ -1,11 +1,13 @@
 import { useState ,useEffect,useContext} from 'react' 
 import '../Css/BookedHomes.css' 
 import {noteContext} from './NoteState/NoteState'
+import API_BASE_URL from '../../../config'
+
 function BookedHomes(){
   const {bookedhome,setBookedhome}=useContext(noteContext);
   useEffect( ()=>{
     const Retur=async ()=>{
-    const url="http://localhost:3000/user/BookedHomes";
+    const url=`${API_BASE_URL}/user/BookedHomes`;
     const response=await fetch(url,{
       method:"GET",
       headers:{

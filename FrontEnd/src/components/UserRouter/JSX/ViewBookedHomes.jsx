@@ -2,6 +2,7 @@ import React from 'react';
 import { useState, useEffect ,useContext} from "react";
 import '../Css/ViewBookedHomes.css';
 import {useNavigate} from 'react-router-dom'
+import API_BASE_URL from '../../../config'
 
 const ViewBookedHomes = () => {
   const Navigate=useNavigate();
@@ -11,7 +12,7 @@ const ViewBookedHomes = () => {
   useEffect(() => {
     const fetchHomes = async () => {
       try {
-        const url = "http://localhost:3000/user/fetchAllBookedHomes";
+        const url = `${API_BASE_URL}/user/fetchAllBookedHomes`;
         const response = await fetch(url, {
           method: "GET"
         });
@@ -68,7 +69,7 @@ const ViewBookedHomes = () => {
       });
       });
       GetFreeHomes.then(async (data)=>{
-        const url="http://localhost:3000/user/GetFreeHomes"
+        const url=`${API_BASE_URL}/user/GetFreeHomes`
         const response=await fetch(url,{
           method:"POST",
           headers:{
